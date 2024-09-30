@@ -4,13 +4,22 @@ const { userAuth } = require("../middleware/userAuth");
 const { userModel } = require( "../db")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const session = require("express-session");
 require("dotenv").config();
 
-const app = express();
-app.set('view engine', 'ejs');
+// const app = express();
+// app.set('view engine', 'ejs');
 
 const USER_JWT_SECRET = process.env.USER_JWT_SECRET;
 
+// Session middleware
+app.use(
+    session({
+      secret: 'mysecret',
+      resave: false,
+      saveUninitialized: true,
+    })
+  );
 // Not Authenticated route
 userRouter.post("/signup", async function(req,res) {
     const emailId = req.body.emailId;
@@ -36,25 +45,40 @@ userRouter.post("/signup", async function(req,res) {
 
 // Authenticated routes
 userRouter.post("/login", async function(req,res) {
-    const emailId = req.body.emailId;
-    const password = req.body.password;
-    const user = await userModel.findOne({emailId : emailId});
-    console.log(user)
-    const passwordMatch = await bcrypt.compare(password,user.password);
-    if (passwordMatch) {
-        const token = jwt.sign({emailId : emailId}, USER_JWT_SECRET);
-        // res.json({
-        //     token : token,
-        //     user : user
-        // });
-        res.render("../view/user",user);
-    } else {
+    try {
+        const emailId = "anurg@yahoo.com";
+        const password = "123";
+        const user = await userModel.findOne({emailId : emailId});
+        console.log(user);
+        const passwordMatch = await bcrypt.compare(password,user.password);
+        if (passwordMatch) {
+            const token = jwt.sign({emailId : emailId}, USER_JWT_SECRET);
+            // res.json({
+            //     token : token,
+            //     user : user
+            // });
+            req.session.user = user;
+            res.redirect("/user");
+        } else {
+            res.json({
+                message:"Invalid Credentials!"
+            });
+        }
+    } catch(e) {
         res.json({
-            message:"Invalid Credentials!"
-        });
+            message : e.message
+        })
     }
-    
+ 
 });
+userRouter.get("/user", function(req,res) {
+    if (req.session.user) {
+        res.render('user', { user: req.session.user });
+      } else {
+        res.redirect('/login');
+      }
+});
+
 userRouter.get("/courses",userAuth,function(req,res) {
     res.json({
         message:"Request Successful."
