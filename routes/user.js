@@ -6,6 +6,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
+const app = express();
+app.set('view engine', 'ejs');
+
 const USER_JWT_SECRET = process.env.USER_JWT_SECRET;
 
 // Not Authenticated route
@@ -40,9 +43,11 @@ userRouter.post("/login", async function(req,res) {
     const passwordMatch = await bcrypt.compare(password,user.password);
     if (passwordMatch) {
         const token = jwt.sign({emailId : emailId}, USER_JWT_SECRET);
-        res.json({
-            token : token
-        });
+        // res.json({
+        //     token : token,
+        //     user : user
+        // });
+        res.render("../view/user",user);
     } else {
         res.json({
             message:"Invalid Credentials!"
