@@ -234,3 +234,5 @@ app.post('/api/logout', (req, res) => {
 
 
 
+MONGO_DB_URL="mongodb+srv://nkbblocks:nkbblocks@cluster0.au80q.mongodb.net/course-demo"
+USER_JWT_SECRET="asbghdgjkhkj78787090"
