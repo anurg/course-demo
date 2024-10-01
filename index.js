@@ -13,6 +13,10 @@ app.get('/', (req, res) => {
   res.render('first', { message: null });
 });
 
+app.get('/signup', (req, res) => {
+  res.render('signup', { message: null });
+});
+
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/admin",adminRouter);
 

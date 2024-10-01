@@ -32,7 +32,7 @@ userRouter.post("/signup", async function(req,res) {
             password : hashedPassword,
             name : name
         });
-        res.json({
+        res.render("signup",{
             message:"Signup Successful."
         });
     } catch(e) {
