@@ -11,6 +11,14 @@ app.set('view engine', 'ejs');
 app.get('/', (req, res) => {
   res.render('first', { message: null });
 });
+app.get("/user", function(req,res) {
+  if (req.session.user) {
+    console.log(req.session.user)
+      res.render('user', { user: req.session.user });
+    } else {
+      res.redirect('/api/v1/user/login');
+    }
+});
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/admin",adminRouter);
 

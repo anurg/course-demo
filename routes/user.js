@@ -13,7 +13,7 @@ require("dotenv").config();
 const USER_JWT_SECRET = process.env.USER_JWT_SECRET;
 
 // Session middleware
-app.use(
+userRouter.use(
     session({
       secret: 'mysecret',
       resave: false,
@@ -71,13 +71,7 @@ userRouter.post("/login", async function(req,res) {
     }
  
 });
-userRouter.get("/user", function(req,res) {
-    if (req.session.user) {
-        res.render('user', { user: req.session.user });
-      } else {
-        res.redirect('/login');
-      }
-});
+
 
 userRouter.get("/courses",userAuth,function(req,res) {
     res.json({
